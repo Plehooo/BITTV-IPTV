@@ -16,8 +16,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -32,9 +31,62 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Show environment
+      - name: Show versions
         run: |
-          echo "===== NODE ====="
+          echo "Node:"
+          node -v
+          echo "NPM:"
+          npm -v
+          echo "Java:"
+          java -version
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Check Capacitor
+        run: npx cap --version
+
+      - name: Prepare Android
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
+
+      - name: Prepare Gradle
+        run: chmod +x android/gradlew
+
+      - name: Check Gradle
+        run: |
+          cd android
+          ./gradlew --version
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug \
+            --no-daemon \
+            --stacktrace \
+            --console=plain \
+            --max-workers=2
+
+      - name: Verify APK
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BITTV-APK-${{ github.run_id }}-${{ github.run_attempt }}
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30          echo "===== NODE ====="
           node -v
           echo "===== NPM ====="
           npm -v
