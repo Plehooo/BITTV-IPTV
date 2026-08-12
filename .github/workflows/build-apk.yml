@@ -16,7 +16,8 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout
+
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -31,7 +32,7 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Show versions
+      - name: Show environment
         run: |
           echo "===== NODE ====="
           node -v
@@ -40,82 +41,7 @@ jobs:
           echo "===== JAVA ====="
           java -version
 
-      - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-
-      - name: Check Capacitor
-        run: |
-          npx cap --version
-
-      - name: Prepare Android
-        run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
-          npx cap sync android
-
-      - name: Prepare Gradle
-        run: |
-          chmod +x android/gradlew
-
-      - name: Check Gradle
-        run: |
-          cd android
-          ./gradlew --version
-
-      - name: Build APK
-        run: |
-          cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace --console=plain --max-workers=2
-
-      - name: Verify APK
-        run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BITTV-APK-${{ github.run_id }}-${{ github.run_attempt }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 30        run: |
-          cd android
-          ./gradlew --version
-
-      - name: Build APK
-        run: |
-          cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
-
-      - name: Verify APK
-        run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BITTV-APK-${{ github.run_id }}-${{ github.run_attempt }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 30          echo "===== NODE ====="
-          node -v
-          echo "===== NPM ====="
-          npm -v
-          echo "===== JAVA ====="
-          java -version
-
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: |
           if [ -f package-lock.json ]; then
             npm ci
@@ -130,18 +56,18 @@ jobs:
       - name: Prepare Android project
         run: |
           if [ ! -d "android" ]; then
-            echo "Android folder not found."
-            echo "Creating Android project..."
+            echo "Android project belum ada."
+            echo "Membuat Android project..."
             npx cap add android
           else
-            echo "Android folder already exists."
+            echo "Android project sudah ada."
           fi
 
       - name: Sync Capacitor
         run: |
           npx cap sync android
 
-      - name: Prepare Gradle
+      - name: Make Gradle executable
         run: |
           chmod +x android/gradlew
 
@@ -153,75 +79,19 @@ jobs:
       - name: Build Debug APK
         run: |
           cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
+          ./gradlew assembleDebug --no-daemon --stacktrace --console=plain --max-workers=2
 
       - name: Verify APK
         run: |
-          echo "===== APK FILE ====="
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Create release folder
-        run: |
-          mkdir -p release
-          cp android/app/build/outputs/apk/debug/app-debug.apk \
-            "release/BITTV-IPTV-${{ github.run_id }}-${{ github.run_attempt }}.apk"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BITTV-APK-${{ github.run_id }}-${{ github.run_attempt }}
-          path: release/*.apk
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Build successful
-        if: success()
-        run: |
-          echo "======================================"
-          echo "       BITTV APK BUILD SUCCESS"
-          echo "======================================"
-          echo "APK berhasil dibuat."
-          echo "Silakan download dari bagian Artifacts."
-          echo "======================================"          npx cap sync android
-
-      - name: Make Gradle executable
-        run: |
-          chmod +x android/gradlew
-
-      - name: Show Gradle version
-        run: |
-          cd android
-          ./gradlew --version
-
-      # Build APK
-      - name: Build Debug APK
-        run: |
-          cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
-
-      # Pastikan APK memang ada
-      - name: Verify APK
-        run: |
+          echo "===== CHECK APK ====="
           test -f android/app/build/outputs/apk/debug/app-debug.apk
           ls -lh android/app/build/outputs/apk/debug/app-debug.apk
 
-      # Buat nama file unik
       - name: Prepare APK
         run: |
           mkdir -p release
-          cp android/app/build/outputs/apk/debug/app-debug.apk \
-             "release/BITTV-IPTV-${{ github.run_id }}-${{ github.run_attempt }}.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release/BITTV-IPTV-${{ github.run_id }}-${{ github.run_attempt }}.apk"
 
-      # Artifact unik setiap run
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -237,324 +107,5 @@ jobs:
           echo "       BITTV APK BUILD SUCCESS"
           echo "======================================"
           echo "APK berhasil dibuat."
-          echo "Artifact tersedia di bagian Artifacts."        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-
-      # ==========================================
-      # JAVA 21
-      # Capacitor Android membutuhkan Java 21
-      # ==========================================
-
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-          cache: gradle
-
-      # ==========================================
-      # INFORMATION
-      # ==========================================
-
-      - name: Show environment
-        run: |
+          echo "Silakan buka bagian Artifacts."
           echo "======================================"
-          echo "BITTV APK BUILD"
-          echo "======================================"
-
-          echo ""
-          echo "Node:"
-          node --version
-
-          echo ""
-          echo "NPM:"
-          npm --version
-
-          echo ""
-          echo "Java:"
-          java -version
-
-          echo ""
-          echo "Working directory:"
-          pwd
-
-          echo ""
-          echo "Files:"
-          ls -la
-
-      # ==========================================
-      # INSTALL NPM
-      # ==========================================
-
-      - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-
-      # ==========================================
-      # CHECK CAPACITOR
-      # ==========================================
-
-      - name: Check Capacitor
-        run: |
-          npx cap --version
-          npx cap doctor || true
-
-      # ==========================================
-      # ANDROID PROJECT
-      # ==========================================
-
-      - name: Prepare Android project
-        run: |
-          if [ ! -d "android" ]; then
-            echo "Android project does not exist."
-            echo "Creating Android project..."
-            npx cap add android
-          else
-            echo "Android project already exists."
-          fi
-
-      # ==========================================
-      # SYNC WEB → ANDROID
-      # ==========================================
-
-      - name: Sync Capacitor
-        run: |
-          npx cap sync android
-
-      # ==========================================
-      # GRADLE PERMISSION
-      # ==========================================
-
-      - name: Make Gradle executable
-        run: |
-          chmod +x android/gradlew
-
-      # ==========================================
-      # GRADLE INFORMATION
-      # ==========================================
-
-      - name: Check Gradle
-        run: |
-          cd android
-
-          echo "======================================"
-          echo "GRADLE VERSION"
-          echo "======================================"
-
-          ./gradlew --version
-
-      # ==========================================
-      # CLEAN
-      # ==========================================
-
-      - name: Clean Android build
-        run: |
-          cd android
-          ./gradlew clean \
-            --no-daemon \
-            --stacktrace \
-            --console=plain
-
-      # ==========================================
-      # BUILD APK
-      # ==========================================
-
-      - name: Build Debug APK
-        run: |
-          cd android
-
-          echo "======================================"
-          echo "BUILDING BITTV APK"
-          echo "======================================"
-
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
-
-      # ==========================================
-      # CHECK APK
-      # ==========================================
-
-      - name: Verify APK
-        run: |
-          echo "======================================"
-          echo "CHECKING APK"
-          echo "======================================"
-
-          ls -lah android/app/build/outputs/apk/debug/
-
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-
-          echo ""
-          echo "APK FOUND:"
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
-
-      # ==========================================
-      # RENAME APK
-      # ==========================================
-
-      - name: Prepare APK
-        run: |
-          mkdir -p release
-
-          cp \
-            android/app/build/outputs/apk/debug/app-debug.apk \
-            "release/BITTV-IPTV-${{ github.run_number }}.apk"
-
-          echo "Final APK:"
-          ls -lh release/
-
-      # ==========================================
-      # UPLOAD APK
-      # Nama artifact SELALU UNIK
-      # sehingga tidak kena 409 Conflict
-      # ==========================================
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BITTV-APK-${{ github.run_number }}
-          path: release/BITTV-IPTV-${{ github.run_number }}.apk
-          if-no-files-found: error
-          retention-days: 30
-
-      # ==========================================
-      # BUILD SUMMARY
-      # ==========================================
-
-      - name: Build summary
-        if: success()
-        run: |
-          echo "======================================"
-          echo "        BITTV APK BUILD SUCCESS"
-          echo "======================================"
-          echo ""
-          echo "APK:"
-          echo "BITTV-IPTV-${{ github.run_number }}.apk"
-          echo ""
-          echo "Artifact:"
-          echo "BITTV-APK-${{ github.run_number }}"
-          echo ""
-          echo "Build number:"
-          echo "${{ github.run_number }}"
-          echo ""
-          echo "Status: SUCCESS"
-          echo "======================================"
-
-      # ==========================================
-      # FAILURE SUMMARY
-      # ==========================================
-
-      - name: Build failure information
-        if: failure()
-        run: |
-          echo "======================================"
-          echo "       BITTV APK BUILD FAILED"
-          echo "======================================"
-          echo ""
-          echo "Periksa log step yang berwarna merah."
-          echo ""
-          echo "Java:"
-          java -version || true
-          echo ""
-          echo "Node:"
-          node --version || true
-          echo ""
-          echo "NPM:"
-          npm --version || true
-          echo ""
-          echo "======================================"
-      - name: Check Capacitor
-        run: npx cap --version
-
-      - name: Create Android project
-        run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          else
-            echo "Android project already exists"
-          fi
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Make Gradle executable
-        run: chmod +x android/gradlew
-
-      - name: Check Java and Gradle
-        run: |
-          java -version
-          cd android
-          ./gradlew --version
-
-      - name: Build Debug APK
-        run: |
-          cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
-
-      - name: Verify APK
-        run: |
-          ls -lh android/app/build/outputs/apk/debug/
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: BITTV-APK-${{ github.run_number }}
-    path: android/app/build/outputs/apk/debug/app-debug.apk
-    if-no-files-found: error
-      - name: Check Capacitor
-        run: npx cap --version
-
-      - name: Create Android project
-        run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          else
-            echo "Android project already exists"
-          fi
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Make Gradle executable
-        run: chmod +x android/gradlew
-
-      - name: Check Java and Gradle
-        run: |
-          java -version
-          cd android
-          ./gradlew --version
-
-      - name: Build Debug APK
-        run: |
-          cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            --console=plain \
-            --max-workers=2
-
-      - name: Verify APK
-        run: |
-          ls -lh android/app/build/outputs/apk/debug/
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BITTV-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
