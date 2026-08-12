@@ -6,10 +6,15 @@
     "remoteUpdate": true
   },
   "hero": {
-    "title": "Live Streaming RCTI Hari Ini",
-    "subtitle": "TV Online Indonesia • cepat • ringan • modern"
+    "title": "Live Streaming Channel Terpopuler",
+    "subtitle": "IPTV Indonesia • cepat • ringan • modern"
   },
-  "repo": "https://github.com/USERNAME/REPOSITORY",
+  "repo": "https://github.com/Plehooo/BITTV-IPTV",
+  "defaultHeaders": {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "Accept": "application/vnd.apple.mpegurl, application/x-mpegURL, audio/mpegurl, text/plain, */*",
+    "Referer": "https://www.rctiplus.com/"
+  },
   "notices": [
     {
       "title": "Selamat datang di BITTV",
@@ -18,12 +23,28 @@
   ],
   "channels": [
     {
+      "id": "test-stream",
+      "name": "Test Stream",
+      "category": "Test",
+      "url": "https://test-streams.com/stream.m3u8",
+      "description": "Test streaming channel untuk debugging",
+      "logo": "https://via.placeholder.com/48x48?text=Test"
+    },
+    {
       "id": "rcti",
       "name": "RCTI",
       "category": "Indonesia",
-      "url": "https://rcti-linier.rctiplus.id/rcti-sdi.m3u8?hdnts=exp=1786557779~hmac=8f34271ae7a5d1cbe4edd2148795443381da6a502c37f150950cd1ba2509903a",
-      "description": "Live Streaming RCTI Hari Ini – TV Online Indonesia | RCTI+",
-      "logo": "assets/channel.svg"
+      "url": "https://rcti-linier.rctiplus.id/rcti-sdi.m3u8",
+      "description": "Live Streaming RCTI – TV Online Indonesia",
+      "logo": "https://via.placeholder.com/48x48?text=RCTI"
+    },
+    {
+      "id": "mnc-tvsports",
+      "name": "MNC TV Sports",
+      "category": "Indonesia",
+      "url": "https://example.com/mnctvs.m3u8",
+      "description": "Sports streaming channel",
+      "logo": "https://via.placeholder.com/48x48?text=MNCTV"
     }
   ]
 }
