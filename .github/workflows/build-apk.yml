@@ -33,11 +33,11 @@ jobs:
 
       - name: Show versions
         run: |
-          echo "Node:"
+          echo "===== NODE ====="
           node -v
-          echo "NPM:"
+          echo "===== NPM ====="
           npm -v
-          echo "Java:"
+          echo "===== JAVA ====="
           java -version
 
       - name: Install dependencies
@@ -49,7 +49,8 @@ jobs:
           fi
 
       - name: Check Capacitor
-        run: npx cap --version
+        run: |
+          npx cap --version
 
       - name: Prepare Android
         run: |
@@ -59,10 +60,31 @@ jobs:
           npx cap sync android
 
       - name: Prepare Gradle
-        run: chmod +x android/gradlew
+        run: |
+          chmod +x android/gradlew
 
       - name: Check Gradle
         run: |
+          cd android
+          ./gradlew --version
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon --stacktrace --console=plain --max-workers=2
+
+      - name: Verify APK
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BITTV-APK-${{ github.run_id }}-${{ github.run_attempt }}
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30        run: |
           cd android
           ./gradlew --version
 
