@@ -1,0 +1,8 @@
+{
+  "appId": "com.bittv.iptv",
+  "appName": "BITTV IPTV",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

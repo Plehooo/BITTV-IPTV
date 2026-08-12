@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "BITTV IPTV",
+    "by": "Aditya",
+    "version": "1.0.0",
+    "remoteUpdate": true
+  },
+  "hero": {
+    "title": "Live Streaming RCTI Hari Ini",
+    "subtitle": "TV Online Indonesia • cepat • ringan • modern"
+  },
+  "repo": "https://github.com/USERNAME/REPOSITORY",
+  "notices": [
+    {
+      "title": "Selamat datang di BITTV",
+      "body": "Aplikasi dapat menerima pembaruan channel, banner, dan pemberitahuan dari server tanpa install ulang APK."
+    }
+  ],
+  "channels": [
+    {
+      "id": "rcti",
+      "name": "RCTI",
+      "category": "Indonesia",
+      "url": "https://rcti-linier.rctiplus.id/rcti-sdi.m3u8?hdnts=exp=1786557779~hmac=8f34271ae7a5d1cbe4edd2148795443381da6a502c37f150950cd1ba2509903a",
+      "description": "Live Streaming RCTI Hari Ini – TV Online Indonesia | RCTI+",
+      "logo": "assets/channel.svg"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>BITTV IPTV</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">bit<span>tv</span></div><small>by Aditya</small></div>
+    <div class="top-actions"><button id="noticeBtn" class="icon-btn">🔔</button><button id="settingsBtn" class="icon-btn">⚙️</button></div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="hero-copy">
+        <span class="pill live">● LIVE</span>
+        <h1 id="heroTitle">Live Streaming RCTI</h1>
+        <p id="heroSub">TV Online Indonesia</p>
+        <button id="heroPlay" class="primary">▶ Tonton Sekarang</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Channel</h2><button id="searchBtn" class="text-btn">Cari</button></div>
+      <div id="categories" class="chips"></div>
+      <div id="channels" class="channel-list"></div>
+    </section>
+
+    <section id="adminSection" class="section hidden">
+      <div class="section-head"><h2>Admin</h2><button id="adminRefresh" class="text-btn">Refresh</button></div>
+      <div class="admin-card">
+        <p>Mode admin lokal. Perubahan konten online dilakukan melalui file <b>data/config.json</b> di GitHub. APK tidak perlu dibuild ulang untuk perubahan channel, banner, pengumuman, dan metadata.</p>
+        <button id="openGithub" class="primary">Buka Repository</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav active" data-page="home">⌂<span>Beranda</span></button>
+    <button class="nav" data-page="favorite">♡<span>Favorit</span></button>
+    <button class="nav" data-page="history">◷<span>Riwayat</span></button>
+    <button class="nav" data-page="settings">⚙<span>Pengaturan</span></button>
+    <button class="nav" data-page="admin">♙<span>Admin</span></button>
+  </nav>
+</div>
+
+<div id="searchModal" class="modal"><div class="sheet"><button class="close">×</button><input id="searchInput" placeholder="Cari channel..."><div id="searchResults"></div></div></div>
+<div id="noticeModal" class="modal"><div class="sheet"><button class="close">×</button><h2>Pemberitahuan</h2><div id="notices"></div></div></div>
+<div id="settingsModal" class="modal"><div class="sheet"><button class="close">×</button><h2>Tampilan</h2><div class="setting"><span>Tema</span><select id="themeSelect"><option value="light">Putih</option><option value="dark">Gelap</option><option value="system">Sistem</option><option value="amoled">AMOLED</option></select></div><div class="setting"><span>Warna aksen</span><input id="accent" type="color" value="#2563eb"></div><div class="setting"><span>Autoplay</span><input id="autoplay" type="checkbox" checked></div></div></div>
+
+<div id="playerModal" class="player-modal">
+  <div class="player-head"><button id="playerClose">‹</button><div><b id="playerTitle">RCTI</b><small id="playerMeta">Live</small></div><button id="playerFav">♡</button></div>
+  <div class="video-wrap"><video id="video" controls playsinline></video><div id="loader">Menghubungkan...</div></div>
+  <div class="player-info"><h2 id="pName">RCTI</h2><p id="pDesc">Live Streaming RCTI Hari Ini – TV Online Indonesia</p><button id="retry" class="primary">↻ Coba Lagi</button></div>
+</div>
+<script src="app.js"></script>
+</body></html>
